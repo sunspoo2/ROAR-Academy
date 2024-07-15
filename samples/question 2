@@ -1,0 +1,38 @@
+import matplotlib.pyplot as plt
+from PIL import Image
+import numpy as np
+import os
+
+# Define the path to the current directory
+path = os.path.dirname(os.path.abspath(__file__))
+
+# Load the Lenna image
+lenna_filename = os.path.join(path, 'lenna.bmp')
+print("Lenna image path:", lenna_filename)
+lenna_data = plt.imread(lenna_filename)
+
+# Load the national flag image
+flag_filename = os.path.join(path, 'flag.png')
+print("Flag image path:", flag_filename)
+flag_image = Image.open(flag_filename)
+
+# Calculate the dimensions for the resized flag image
+flag_width = lenna_data.shape[1] // 4  # Quarter of Lenna image width
+flag_height = lenna_data.shape[0] // 4  # Quarter of Lenna image height
+
+# Resize the flag image
+flag_image_resized = flag_image.resize((flag_width, flag_height))
+
+# Convert the resized flag image to a NumPy array
+resized_flag = np.array(flag_image_resized)
+
+# Create a writable copy of the Lenna image data
+lenna_data_writable = np.copy(lenna_data)
+
+# Ensure the resized flag fits within the top-right corner of the Lenna image
+lenna_data_writable[0:flag_height, -flag_width:] = resized_flag
+
+# Display the modified Lenna image
+plt.imshow(lenna_data_writable)
+plt.axis('off')  # Hide axes for better visualization
+plt.show()
