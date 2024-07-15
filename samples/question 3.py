@@ -16,7 +16,7 @@ page_number = len(pdfReader.pages)   # this tells you total pages
 
 full_text = ""
 for page_num in range(page_number):
-    page_object = pdfReader.pages[page_num]    # We just get page 0 as example 
+    page_object = pdfReader.pages[page_num] 
     page_text = page_object.extract_text()   # this is the str type of full page
     full_text += page_text + "\n"
 
