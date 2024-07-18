@@ -1,0 +1,51 @@
+import tensorflow as tf
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Flatten
+from tensorflow.keras.datasets import mnist
+import matplotlib.pyplot as plt
+
+# Load the data
+(x_train, y_train), (x_test, y_test) = mnist.load_data()
+
+# Display some examples from the first 20 images
+print(y_train[0:20])
+plt.figure(1)
+for i in range(20):
+    plt.subplot(2, 10, i+1)
+    plt.imshow(x_train[i], cmap=plt.cm.binary)
+plt.show()
+
+# Preprocess the data
+x_train = x_train.reshape(x_train.shape[0], 28*28)
+x_test = x_test.reshape(x_test.shape[0], 28*28)
+x_train = x_train.astype('float32')
+x_test = x_test.astype('float32')
+x_train /= 255
+x_test /= 255
+
+# Convert class vectors to binary class matrices
+num_classes = 10
+y_train = tf.keras.utils.to_categorical(y_train, num_classes)
+y_test = tf.keras.utils.to_categorical(y_test, num_classes)
+
+# Create the model
+model = Sequential()
+model.add(Dense(800, input_shape=(28*28,), activation='relu'))
+model.add(Dense(800, activation='relu'))
+model.add(Dense(128, activation='relu'))
+model.add(Dense(num_classes, activation='softmax'))
+
+# Compile the model
+opt = tf.keras.optimizers.SGD(learning_rate=0.1)
+model.compile(loss='mean_squared_error', optimizer=opt, metrics=['accuracy'])
+
+# Train the model
+batch_size = 128
+epochs = 40
+model.fit(x_train, y_train, batch_size=batch_size, epochs=epochs, verbose=1, validation_split=0.2)
+
+# Evaluate the model
+score = model.evaluate(x_test, y_test, verbose=0)
+print(model.summary())
+print('Test loss:', score[0])
+print('Test accuracy:', score[1])
